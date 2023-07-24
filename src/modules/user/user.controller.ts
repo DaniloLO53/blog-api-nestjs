@@ -1,16 +1,13 @@
-import { Controller } from '@nestjs/common';
-import { UserRepository } from './user.repository';
+import { Body, Controller, Post } from '@nestjs/common';
+import { UserSignUp } from './user.dto';
 import { UserService } from './user.service';
 
-@Controller('users')
+@Controller()
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly userRepository: UserRepository,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
-  async login() {
-    const email = 'dan@gmail.com';
-    return this.userRepository.findByEmail(email);
+  @Post('auth/sign-up')
+  async createUser(@Body() userData: UserSignUp) {
+    return await this.userService.createUser(userData);
   }
 }

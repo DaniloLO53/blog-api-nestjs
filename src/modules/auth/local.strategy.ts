@@ -9,10 +9,14 @@ import { UserSanitized } from './user.type';
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
     super({ usernameField: 'email' });
+    console.log(Strategy);
   }
 
-  async validate(userLogin: UserLogin): Promise<UserSanitized> | never {
-    const user = await this.authService.validateUser(userLogin);
+  async validate(
+    email: string,
+    password: string,
+  ): Promise<UserSanitized> | never {
+    const user = await this.authService.validateUser({ email, password });
 
     if (!user) {
       throw new UnauthorizedException({
