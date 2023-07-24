@@ -11,17 +11,67 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique()
-  password String
-  nickname String    @unique()
-  articles Article[]
+  id         Int       @id @default(autoincrement())
+  email      String    @unique()
+  password   String
+  nickname   String    @unique()
+  profile    Profile?
+  writers    Writer[]
+  updated_at DateTime? @default(now())
+  created_at DateTime
+
+  @@map("users")
+}
+
+model Profile {
+  id          Int       @id @default(autoincrement())
+  description String?
+  user_id     Int       @unique()
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  updated_at  DateTime? @default(now())
+  created_at  DateTime
+
+  @@map("profiles")
 }
 
 model Article {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String? @default("No content")
-  author    User    @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  author_id Int
+  id               Int              @id @default(autoincrement())
+  title            String
+  content          String?          @default("No content")
+  writers          Writer[]
+  article_requests ArticleRequest[]
+  updated_at       DateTime?        @default(now())
+  created_at       DateTime
+
+  @@map("articles")
+}
+
+model ArticleRequest {
+  id         Int       @id @default(autoincrement())
+  title      String
+  content    String?   @default("No content")
+  article    Article   @relation(fields: [article_id], references: [id], onDelete: Cascade)
+  writer     Writer    @relation(fields: [writer_id], references: [id], onDelete: Cascade)
+  article_id Int
+  writer_id  Int
+  updated_at DateTime? @default(now())
+  created_at DateTime
+
+  @@map("article_requests")
+}
+
+model Writer {
+  id               Int              @id @default(autoincrement())
+  title            String
+  content          String?          @default("No content")
+  article          Article          @relation(fields: [article_id], references: [id], onDelete: Cascade)
+  user             User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  article_id       Int
+  user_id          Int
+  article_requests ArticleRequest[]
+  isModerator      Boolean          @default(false)
+  updated_at       DateTime?        @default(now())
+  created_at       DateTime
+
+  @@map("writers")
 }
