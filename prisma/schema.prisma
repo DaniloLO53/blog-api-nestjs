@@ -11,14 +11,15 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  email      String    @unique()
-  password   String
-  nickname   String    @unique()
-  profile    Profile?
-  writers    Writer[]
-  updated_at DateTime? @default(now())
-  created_at DateTime
+  id               Int              @id @default(autoincrement())
+  email            String           @unique()
+  password         String
+  nickname         String           @unique()
+  profile          Profile?
+  article_requests ArticleRequest[]
+  updated_at       DateTime?        @default(now())
+  created_at       DateTime
+  moderator        Moderator[]
 
   @@map("users")
 }
@@ -38,7 +39,7 @@ model Article {
   id               Int              @id @default(autoincrement())
   title            String
   content          String?          @default("No content")
-  writers          Writer[]
+  moderators       Moderator[]
   article_requests ArticleRequest[]
   updated_at       DateTime?        @default(now())
   created_at       DateTime
@@ -51,27 +52,25 @@ model ArticleRequest {
   title      String
   content    String?   @default("No content")
   article    Article   @relation(fields: [article_id], references: [id], onDelete: Cascade)
-  writer     Writer    @relation(fields: [writer_id], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
   article_id Int
-  writer_id  Int
+  user_id    Int
   updated_at DateTime? @default(now())
   created_at DateTime
 
   @@map("article_requests")
 }
 
-model Writer {
-  id               Int              @id @default(autoincrement())
-  title            String
-  content          String?          @default("No content")
-  article          Article          @relation(fields: [article_id], references: [id], onDelete: Cascade)
-  user             User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  article_id       Int
-  user_id          Int
-  article_requests ArticleRequest[]
-  isModerator      Boolean          @default(false)
-  updated_at       DateTime?        @default(now())
-  created_at       DateTime
+model Moderator {
+  id         Int       @id @default(autoincrement())
+  title      String
+  content    String?   @default("No content")
+  article    Article   @relation(fields: [article_id], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  article_id Int
+  user_id    Int
+  updated_at DateTime? @default(now())
+  created_at DateTime
 
-  @@map("writers")
+  @@map("moderators")
 }

@@ -28,7 +28,10 @@ export class UserRepository {
 
   async create(userData: UserSignUp): Promise<User> {
     return await this.prismaService.user.create({
-      data: userData,
+      data: {
+        ...userData,
+        created_at: new Date(),
+      },
     });
   }
 }

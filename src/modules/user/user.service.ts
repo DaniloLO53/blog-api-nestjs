@@ -16,7 +16,6 @@ export class UserService {
       email,
       nickname,
     });
-    console.log('user', user);
     if (user.length !== 0)
       throw new ConflictException({
         message: 'Email or nickname already registered',

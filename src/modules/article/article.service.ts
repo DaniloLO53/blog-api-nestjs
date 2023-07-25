@@ -6,11 +6,13 @@ import { ArticleDto } from './article.dto';
 @Injectable()
 export class ArticleService {
   constructor(private readonly prismaService: PrismaService) {}
-  async createArticle(article: ArticleDto): Promise<Article> {
-    const id = 1;
-
+  async createArticle(article: ArticleDto) {
+    return 'bu';
     return await this.prismaService.article.create({
-      data: { ...article, author_id: id },
+      data: {
+        created_at: new Date(),
+        ...article,
+      },
     });
   }
 }

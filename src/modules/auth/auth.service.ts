@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   async login(userSanitized: UserSanitized) {
-    const payload = { ...userSanitized, sub: userSanitized.id };
+    const payload = { ...userSanitized };
     return {
       access_token: this.jwtService.sign(payload),
     };
